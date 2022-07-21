@@ -1,0 +1,12 @@
+{
+    "ID": 1,
+    "Word": "Word",
+    "Soft Rhymes": "Birth, Door, Wore",
+    "Hard Rhymes": "Bird, Turd"
+}
+{
+    "ID": 2,
+    "Word": "Bird",
+    "Soft Rhymes": "Birth, Door, Wore",
+    "Hard Rhymes": "Word, Turd"
+}
