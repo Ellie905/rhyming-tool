@@ -5,6 +5,10 @@
 # Purpose: Create a tool that can pull suggested rhymes from a "Dictionary" file to provide writing aid for memory/
 #          language impaired
 
+# To-do:
+# * Make pyrhymer.py (type word + args -> get rhymes)
+# * rewrite saving function
+
 # Resources:
 # https://docs.python.org/3/library/argparse.html
 # https://pypi.org/project/easygui/
@@ -26,7 +30,7 @@ class DictEntry:
     def __init__(self):
         self.rhymes = {'ID': int, 'Word': str, 'Soft Rhymes': list, 'Hard Rhymes': list}
 
-    def create_entry(self, ID, word, softrhymes: list, hardrhymes):
+    def create_entry(self, ID, word, softrhymes, hardrhymes):
         self.rhymes['ID'] = ID
         self.rhymes['Word'] = word
         self.rhymes['Soft Rhymes'] = softrhymes
@@ -63,11 +67,47 @@ class RhymeDict:
     # Read file, populate new DictEntry objects and append to self.entries
     def readtodict(self, path):
         with open(path, 'r') as file:
-            entry = DictEntry
+            entry = DictEntry()
+            temp = json.load(file)
 
-            x = file.readline()
-            print(x)
-            # entry.create_entry()
+            data = str(temp[0]).split(',')
+
+            # Used to define new DictEntry object
+            id = str(data[0]).lstrip('{')
+            id = id.split(':')
+            id = id[1].replace('\'', '')
+            id = id.lstrip()
+
+            int_id = int(id)
+
+            # Used to define new DictEntry object
+            word = str(data[1]).lstrip()
+            word = word.split(':')
+            word = word[1].replace('\'', '')
+            word = word.lstrip()
+
+            str_word = str(word)
+
+            # Used to define new DictEntry object
+            srhymes = str(data[2]).lstrip()
+            srhymes = srhymes.split(':')
+            srhymes = srhymes[1].replace('\'', '')
+            srhymes = srhymes.replace(';', ',')
+            srhymes = srhymes.replace(' ', '')
+
+            list_srh: list[str] = srhymes.split(',')
+
+            # Used to define new DictEntry object
+            hrhymes = str(data[3]).rstrip('}')
+            hrhymes = hrhymes.split(':')
+            hrhymes = hrhymes[1].replace('\'', '')
+            hrhymes = hrhymes.replace(';', ',')
+            hrhymes = hrhymes.replace(' ', '')
+
+            list_hrh: list[str] = hrhymes.split(',')
+
+            entry.create_entry(int_id, str_word, list_srh, list_hrh)
+            self.entries.append(entry)
 
     # Export self.entries to file
     def exportdict(self):
@@ -103,7 +143,6 @@ class RhymeDict:
     # def create_reverse_entry(self):
 
 
-
 print('hello world')
 # argparser
 # -h -help
@@ -118,11 +157,11 @@ print('hello world')
 
 rhymedict = RhymeDict()
 
-#rhymedict.importdict()
-x = DictEntry()
-y = DictEntry()
-x.create_entry(1, 'Word', ['Birth, Door, Wore'], ['Bird, Turd'])
-y.create_entry(2, 'Bird', ['Birth, Door, Wore'], ['Word, Turd'])
-rhymedict.addtodict(x)
-rhymedict.addtodict(y)
-rhymedict.exportdict()
+rhymedict.importdict()
+# x = DictEntry()
+# y = DictEntry()
+# x.create_entry(1, 'Word', ['Birth, Door, Wore'], ['Bird, Turd'])
+# y.create_entry(2, 'Bird', ['Birth, Door, Wore'], ['Word, Turd'])
+# rhymedict.addtodict(x)
+# rhymedict.addtodict(y)
+# rhymedict.exportdict()
